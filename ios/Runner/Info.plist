@@ -40,6 +40,10 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+    <false/>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Para actualiar la foto de perfil necesitamos a las fotografias.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Para actualiar la foto de perfil necesitamos a la camara.</string>
 </dict>
 </plist>

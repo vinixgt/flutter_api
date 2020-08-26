@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:flutter_api_rest/utils/dialog.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:flutter_api_rest/api/my_api.dart';
 import 'package:flutter_api_rest/utils/auth.dart';
-
 import 'package:flutter_api_rest/models/user.dart';
+import 'package:flutter_api_rest/widgets/avatar.dart';
+import 'package:flutter_api_rest/utils/extras.dart';
+
 
 class HomePage extends StatefulWidget {
   static const routeName = 'home';
@@ -24,6 +29,21 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
     setState(() {});
   }
 
+  _pickImate() async {
+    final PickedFile pickedFile = await Extras.pickImage(false);
+    if(pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      ProgressDialog progressDialog  = ProgressDialog(context);
+      progressDialog.show();
+      final String result = await MyApi.instance.updateAvatar(bytes, pickedFile.path);
+      if(result != null) {
+        this.user = this.user.setAvatar(result);
+        setState(() {});
+      }
+      progressDialog.dismiss();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +61,11 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                 )
                 :Column(
                   children: <Widget> [
+                    AvatarButon(
+                      url: this.user.avatar,
+                      imageSize: 100,
+                      onPressed: this._pickImate,
+                    ),
                     Text(this.user.userName),
                     Text(this.user.email),
                     Text(this.user.createdAt.toLocal().toString()),

@@ -1,9 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_api_rest/pages/home_page.dart';
 import 'package:flutter_api_rest/utils/auth.dart';
 import 'package:flutter_api_rest/utils/dialog.dart';
 import 'package:flutter_api_rest/models/user.dart';
+import 'package:flutter_api_rest/utils/extras.dart';
+
+
+const baseUrl = 'https://curso-api-flutter.herokuapp.com';
 
 class MyApi {
 
@@ -13,7 +19,7 @@ class MyApi {
 
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: 'https://curso-api-flutter.herokuapp.com'
+      baseUrl: baseUrl
     )
   );
 
@@ -135,6 +141,36 @@ class MyApi {
       return User.fromJson(response.data);
     } catch (error) {
       print('getUserInfo: ................');
+      print(error);
+      return null;
+    }
+  }
+
+  Future<String> updateAvatar(Uint8List bytes, String filePath) async {
+    
+    try{
+      FormData formData = FormData.fromMap({
+        'attachment': MultipartFile.fromBytes(
+          bytes, 
+          filename: Extras.getFilename(filePath)
+        )
+      });
+
+      final Response response = await this._dio.post(
+        '/api/v1/update-avatar', 
+        options: Options(
+          headers: {
+            'token': await Auth.instance.accessToken,
+          }
+        ),
+        data: formData,
+      );
+      return baseUrl + response.data;
+    } catch (error) {
+      print('update avatar: ................');
+      if(error is DioError) {
+        print(error.response.data);
+      }
       print(error);
       return null;
     }

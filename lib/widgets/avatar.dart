@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 
 class AvatarButon extends StatelessWidget {
 
+  final String url;
+  final VoidCallback onPressed; 
   final double imageSize;
 
-  const AvatarButon({Key key, this.imageSize = 100}) : super(key: key);
+  const AvatarButon({Key key, this.imageSize = 100, this.url, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +28,10 @@ class AvatarButon extends StatelessWidget {
           ),
           child: ClipOval(
             child: Image.network(
-              'https://www.kindpng.com/picc/m/78-785827_user-profile-avatar-login-account-male-user-icon.png',
+              this.url ?? 'https://www.kindpng.com/picc/m/78-785827_user-profile-avatar-login-account-male-user-icon.png',
               width: this.imageSize,
               height: this.imageSize,
+              fit: BoxFit.cover,
             ),
           ),
         ),
@@ -54,7 +57,7 @@ class AvatarButon extends StatelessWidget {
                 shape: BoxShape.circle
               ),
             ),
-            onPressed: () {}
+            onPressed: this.onPressed,
           ),
         )
       ],
